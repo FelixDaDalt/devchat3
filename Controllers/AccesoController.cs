@@ -69,6 +69,31 @@ namespace devchat3.Controllers
             user.userName = userName.Value;
             user.email = email.Value;
             user.isGoogle = true;
+            Usuario userAux = uow.Repousuario.Get(email.Value);
+            if (userAux == null)
+            {
+                uow.Repousuario.Insert(user);
+                userAux = uow.Repousuario.Get(email.Value);
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, userAux.userName),
+                        new Claim(ClaimTypes.Email, userAux.email),
+                        new Claim(ClaimTypes.NameIdentifier, userAux.Id.ToString()),
+                    };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            }
+            else
+            {
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, userAux.userName),
+                        new Claim(ClaimTypes.Email, userAux.email),
+                        new Claim(ClaimTypes.NameIdentifier, userAux.Id.ToString()),
+                    };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            }
             return RedirectToAction("index", "Home", user);
         }
 
@@ -105,6 +130,31 @@ namespace devchat3.Controllers
                 identity.RemoveClaim(currentSidClaim);
 
             identity.AddClaim(new Claim(ClaimTypes.Sid, "claim"));
+            Usuario userAux = uow.Repousuario.Get(datos.email);
+            if (userAux == null)
+            {
+                uow.Repousuario.Insert(user);
+                userAux = uow.Repousuario.Get(datos.email);
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, userAux.userName),
+                        new Claim(ClaimTypes.Email, userAux.email),
+                        new Claim(ClaimTypes.NameIdentifier, userAux.Id.ToString()),
+                    };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            }
+            else
+            {
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, userAux.userName),
+                        new Claim(ClaimTypes.Email, userAux.email),
+                        new Claim(ClaimTypes.NameIdentifier, userAux.Id.ToString()),
+                    };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            }
             return RedirectToAction("index", "Home", user);
         }
 
@@ -158,12 +208,12 @@ namespace devchat3.Controllers
                     {
                         new Claim(ClaimTypes.Name, user.userName),
                         new Claim(ClaimTypes.Email, user.email),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
                     return RedirectToAction("index","Home",user);
                 }
                 else

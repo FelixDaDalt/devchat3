@@ -1,0 +1,66 @@
+﻿@using System.Security.Claims
+@using devchat3.Models
+@model RoomResponse
+
+<h1>@Model.Name</h1>
+
+@*@inject List<MessageResponse> m;
+@m = @Model.Messages
+@foreach(var f in m)
+{
+    f.MessageBody
+}*@
+
+<div class="row">
+    <div class="col-12">
+        <label id="user">@User.Identity.Name</label>
+        @*<input type="text" placeholder="usuario" id="user" />*@
+        <input type="text" placeholder="texto" id="message" />
+        <button id="btnSend">Enviar</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <div id="messages"></div>
+    </div>
+    <div class="col-6">
+        <div id="notifications"></div>
+    </div>
+</div>
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+<script>
+
+var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+connection.start().then(() => {
+    connection.invoke("AddToGroup", "@Model.Name")
+});
+document.getElementById("btnSend").addEventListener("click", (event) => {
+    let room = "@Model.Name";
+    let roomId = @Model.Id;
+    let user = "@User.Identity.Name";
+    let message = document.getElementById("message").value;
+    let userId = "@User.FindFirstValue(ClaimTypes.NameIdentifier)";
+
+    connection.invoke("SendMessage", room, roomId, user, message,userId)
+
+    document.getElementById("message").value = "";
+    document.getElementById("message").focus();
+
+    event.preventDefault();
+})
+
+connection.on("RecieveMessage", (user, message) => {
+    var message = "<div><b>" + user + " dijo:</b> " + message + "</div>";
+    document.getElementById("messages").innerHTML =
+        message + document.getElementById("messages").innerHTML;
+});
+
+connection.on("Bienvenido", (message) => {
+    var message = "<div><b>" + message + "</b></div>";
+    document.getElementById("notifications").innerHTML =
+        message + document.getElementById("notifications").innerHTML;
+});
+</script>

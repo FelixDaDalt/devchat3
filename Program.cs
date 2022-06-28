@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using System.Security.Claims;
 using IdentityModel;
+using devchat3.Chats;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +37,7 @@ option.AccessDeniedPath = "/Acceso/Login";
 .AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
  {
      options.AppId = "";
-     options.AppSecret =  "";
+     options.AppSecret = "";
      options.SaveTokens = true;
 
      options.Scope.Add("public_profile");
@@ -49,6 +50,7 @@ var connectionString = builder.Configuration.GetConnectionString("defaultconexio
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(connectionString));
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IUOW, UOW>();
+builder.Services.AddSignalR();
 
 
 var app = builder.Build();
@@ -72,5 +74,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapHub<ChatHub>("/chatHub");
 app.Run();

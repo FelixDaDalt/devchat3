@@ -29,7 +29,7 @@ namespace devchat3.Models
         public string fullname { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime nac { get; set; }
+        public DateTime? nac { get; set; }
 
 
         [DefaultValue(false)]
