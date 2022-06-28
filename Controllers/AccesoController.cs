@@ -48,7 +48,7 @@ namespace devchat3.Controllers
             var currentSidClaim = identity.FindFirst(x => x.Type == ClaimTypes.Sid);
             var email = identity.FindFirst(x => x.Type == ClaimTypes.Email);
             var userName = identity.FindFirst(x => x.Type == ClaimTypes.Name);
-
+            var avatar = identity.FindFirst("urn:google:image");
             if (currentSidClaim != null)
                 identity.RemoveClaim(currentSidClaim);
 
@@ -56,7 +56,6 @@ namespace devchat3.Controllers
 
             Usuario user = new Usuario();
 
-            var avatar = HttpContext.User.FindFirst("urn:google:image");
             if (avatar != null)
             {
                 user.photo = avatar.Value;
