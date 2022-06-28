@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace devchat3.Models
@@ -30,10 +31,13 @@ namespace devchat3.Models
         [DataType(DataType.Date)]
         public DateTime nac { get; set; }
 
-        public bool isFacebook { get; set; } = false;
-        public bool isGoogle { get; set; } = false;
 
-        public string photo { get; set; } = null;
+        [DefaultValue(false)]
+        public bool isFacebook { get; set; }
+        [DefaultValue(false)]
+        public bool isGoogle { get; set; }
+        [DefaultValue("")]
+        public string? photo { get; set; }
 
     }
 }

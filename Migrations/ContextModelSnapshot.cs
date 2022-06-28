@@ -42,12 +42,21 @@ namespace devchat3.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(50)");
 
+                    b.Property<bool>("isFacebook")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isGoogle")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("nac")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("VARCHAR(500)");
+
+                    b.Property<string>("photo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userName")
                         .IsRequired()

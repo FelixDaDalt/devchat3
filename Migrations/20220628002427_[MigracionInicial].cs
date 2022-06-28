@@ -20,7 +20,10 @@ namespace devchat3.Migrations
                     password = table.Column<string>(type: "VARCHAR(500)", nullable: false),
                     confirmar = table.Column<string>(type: "VARCHAR(500)", nullable: false),
                     fullname = table.Column<string>(type: "VARCHAR(50)", nullable: false),
-                    nac = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    nac = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isFacebook = table.Column<bool>(type: "bit", nullable: false),
+                    isGoogle = table.Column<bool>(type: "bit", nullable: false),
+                    photo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

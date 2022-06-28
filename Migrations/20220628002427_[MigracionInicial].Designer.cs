@@ -12,7 +12,7 @@ using devchat3.Data;
 namespace devchat3.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20220623002934_[MigracionInicial]")]
+    [Migration("20220628002427_[MigracionInicial]")]
     partial class MigracionInicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,12 +44,21 @@ namespace devchat3.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(50)");
 
+                    b.Property<bool>("isFacebook")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isGoogle")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("nac")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("VARCHAR(500)");
+
+                    b.Property<string>("photo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userName")
                         .IsRequired()
