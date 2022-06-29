@@ -1,33 +1,96 @@
-﻿@using System.Security.Claims
-@using devchat3.Models
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @model RoomResponse
 
-<h1>@Model.Name</h1>
+@{
 
-@*@inject List<MessageResponse> m;
-@m = @Model.Messages
-@foreach(var f in m)
-{
-    f.MessageBody
-}*@
+    List<RoomResponse> l = ViewData["ChatList"] as List<RoomResponse>;
+    List<MessageResponse> m = ViewData["MessageList"] as List<MessageResponse>;
+    List<Usuario> u = ViewData["UserList"] as List<Usuario>;
+}
+@{ 
+    
+    ViewData["Title"] = Model.Name;   
+}
 
-<div class="row">
-    <div class="col-12">
-        <label id="user">@User.Identity.Name</label>
-        @*<input type="text" placeholder="usuario" id="user" />*@
-        <input type="text" placeholder="texto" id="message" />
-        <button id="btnSend">Enviar</button>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-6">
-        <div id="messages"></div>
-    </div>
-    <div class="col-6">
-        <div id="notifications"></div>
-    </div>
-</div>
+
+   
+
+        <div id="plist" class="people-list">
+            @*<div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-search" style="font-size:24px"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Search...">                       
+                        
+            </div>*@
+            <ul class="list-unstyled chat-list mt-2 mb-0">
+                        @foreach(RoomResponse x in l)
+                        {
+                            <a href="~/Chat/Room?room=@x.Id&category=@x.CategoryId&senderId=@User.FindFirstValue(ClaimTypes.NameIdentifier)&@x.Name"> <li class="clearfix">@x.Name</li></a>
+                                
+                        }
+                       
+            </ul>
+                    
+        </div>
+
+        <div class="chat">
+            <div class="chat-history" id="chat">
+                <ul class="m-b-0" id="messages">
+            @{
+
+                foreach (var item in m)
+                {
+                    if (item.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                            <li class='clearfix'>
+                                <div class="answer right">
+                                    <div class="name">@User.Identity?.Name</div>
+                                    <div class="text">@item.MessageBody</div>
+                                    <div class="time">@item.Date</div>
+                                </div>
+                            </li>
+
+                    }
+                    else
+                    {
+                            <li class='clearfix'>
+                                <div class="answer left">
+                                    <div class="name">@item.UserId</div>
+                                    <div class="text">@item.MessageBody</div>
+                                    <div class="time">@item.Date</div>
+                                </div>
+                            </li>
+                    }     
+                }
+                    }
+
+                </ul>
+
+                <div class="col-6">
+                    <div id="notifications">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-message clearfix">
+                <div class="input-group mb-0">
+                    <div class="input-group-prepend">
+                        <span id="btnSend" class="input-group-text"><i class="fa fa-send" style="font-size:24px"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Envie a @ViewData["Title"]" id="message">                                    
+                </div>
+            </div>
+        </div>
+                
+
+
+
+
+
 
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
@@ -43,19 +106,27 @@ document.getElementById("btnSend").addEventListener("click", (event) => {
     let user = "@User.Identity.Name";
     let message = document.getElementById("message").value;
     let userId = "@User.FindFirstValue(ClaimTypes.NameIdentifier)";
-
-    connection.invoke("SendMessage", room, roomId, user, message,userId)
+    connection.invoke("SendMessage", room, roomId,  user, message, userId)
 
     document.getElementById("message").value = "";
-    document.getElementById("message").focus();
+    document.getElementById("ulMessages").focus();
 
     event.preventDefault();
 })
 
-connection.on("RecieveMessage", (user, message) => {
-    var message = "<div><b>" + user + " dijo:</b> " + message + "</div>";
+connection.on("RecieveMessage", (userid, user, message, date) => {
+    let u = "@User.FindFirstValue(ClaimTypes.NameIdentifier).ToString()";
+    if (userid !== u) {
+        var message = "<li class='clearfix'><div class='answer left'><div class='name'>" + user + "</div><div class='text'>" + message + "</div><div class='time'>" + date + "</div></div></li>";
+
+    }
+    else {
+        var message = "<li class='clearfix'><div class='answer right'><div class='name'>" + user + "</div><div class='text'>" + message + "</div><div class='time'>" + date + "</div></div></li>";
+    }
+    
     document.getElementById("messages").innerHTML =
-        message + document.getElementById("messages").innerHTML;
+          document.getElementById("messages").innerHTML + message;
+    document.getElementById("message").scrollIntoView();
 });
 
 connection.on("Bienvenido", (message) => {
@@ -63,4 +134,6 @@ connection.on("Bienvenido", (message) => {
     document.getElementById("notifications").innerHTML =
         message + document.getElementById("notifications").innerHTML;
 });
+
+
 </script>

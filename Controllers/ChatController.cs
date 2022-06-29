@@ -8,6 +8,27 @@ namespace devchat3.Controllers
 {
     public class ChatController : Controller
     {
+
+        public List<RoomResponse> GetRoomsAsync()
+        {
+            List<RoomResponse> roomChatList = null;
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string url = "https://localhost:7211/api/RoomChats/" + claim;
+            HttpClient client = new HttpClient();
+            var response = client.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var content = response.Content.ReadAsStringAsync().Result;
+                roomChatList = JsonSerializer.Deserialize<List<RoomResponse>>(content,
+                    new JsonSerializerOptions()
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }
+                    );
+            }
+            return roomChatList;
+        }
+
         [Authorize]
         public ActionResult<List<RoomResponse>> Index()
         {
@@ -32,6 +53,7 @@ namespace devchat3.Controllers
 
         public IActionResult Room(int room, int category, string senderId, string receiverName)
         {
+            ViewData["ChatList"] = GetRoomsAsync();
             //Aca le pido a la api el historial de mensajes de la sala
             var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             RoomResponse roomChat = new RoomResponse();
@@ -68,6 +90,9 @@ namespace devchat3.Controllers
             //            );
             //    }
             //}
+            
+            ViewData["MessageList"] = roomChat.Messages;
+            // ??ViewData["UserList"] = 
             return View("Room", roomChat);
         }
     }

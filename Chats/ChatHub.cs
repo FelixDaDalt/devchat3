@@ -24,7 +24,7 @@ namespace devchat3.Chats
             {
                 var result = httpResponse.Content.ReadAsStringAsync().Result;
             }
-            await Clients.Group(room).SendAsync("RecieveMessage", user, message,mess.Date.ToString());
+            await Clients.Group(room).SendAsync("RecieveMessage", userId, user, message,mess.Date.ToString());
         }
 
         public async Task AddToGroup(string room)

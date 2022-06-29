@@ -36,8 +36,8 @@ option.AccessDeniedPath = "/Acceso/Login";
 })
 .AddFacebook(FacebookDefaults.AuthenticationScheme, options =>
  {
-     options.AppId = "";
-     options.AppSecret = "";
+     options.AppId = "712519400023612";
+     options.AppSecret = "da01f9438c6619d9528f39aaec8ae739";
      options.SaveTokens = true;
 
      options.Scope.Add("public_profile");
