@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+@using System.Security.Claims
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,7 +25,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Chat" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Details" asp-route-id="@User.FindFirstValue(ClaimTypes.NameIdentifier)">Profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Acceso" asp-action="CerrarSesion">Salir</a>

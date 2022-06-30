@@ -57,6 +57,7 @@ a {
     -o-transition: .5s;
     -webkit-transition: .5s;
     transition: .5s;
+    overflow-y: auto;
 }
 
     .people-list .chat-list li {
@@ -117,7 +118,7 @@ a {
 .chat .chat-history {
     background-color: #111b21;
     background-image: url(../img/background.png);
-    height: 500px;
+    height: 400px;
     width: 100%;
     overflow-y: scroll;
     padding: 20px;

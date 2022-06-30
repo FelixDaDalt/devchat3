@@ -15,6 +15,7 @@ namespace devchat3.Chats
             mess.UserId = userId;
             mess.Date = DateTime.Now;
             mess.RoomChatId = roomId;
+            mess.UserName = user;
             string url = "https://localhost:7211/api/Messages";
             HttpClient httpClient = new HttpClient();
             string json = JsonSerializer.Serialize<MessageRequest>(mess);
@@ -30,7 +31,7 @@ namespace devchat3.Chats
         public async Task AddToGroup(string room)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, room);
-            await Clients.Group(room).SendAsync("Bienvenido", $"Bienvenido: { Context.ConnectionId}");
+            await Clients.Group(room).SendAsync("Bienvenido", $"Bienvenido: { Context.User.Identity.Name}");
         }
     }
 }

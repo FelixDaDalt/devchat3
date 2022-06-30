@@ -3,11 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
-
+using devchat3.UOW;
 namespace devchat3.Controllers
 {
     public class ChatController : Controller
     {
+        private readonly IUOW uOW;
+        public ChatController(IUOW uOW)
+        {
+            this.uOW = uOW;
+        }
 
         public List<RoomResponse> GetRoomsAsync()
         {
@@ -92,8 +97,25 @@ namespace devchat3.Controllers
             //}
             
             ViewData["MessageList"] = roomChat.Messages;
-            // ??ViewData["UserList"] = 
+            List<Usuario> usuarios = new List<Usuario>();
+            usuarios = uOW.Repousuario.GetAll().ToList();
+            ViewData["UserList"] = usuarios;
             return View("Room", roomChat);
+        }
+
+        public IActionResult setPrivateRoom(string receiverId, string senderName, string senderId, string receiverName)
+        {
+            RoomRequest roomRequest = new RoomRequest();
+            roomRequest.SenderName = senderName;
+            roomRequest.ReceiverName = receiverName;    
+            roomRequest.IdReceiver = receiverId;
+            roomRequest.IdSender = senderId;
+            string url = "https://localhost:7211/api/RoomChats/priv";
+            HttpClient client = new HttpClient();
+            string json = JsonSerializer.Serialize<RoomRequest>(roomRequest);
+            HttpContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var httpResponse = client.PostAsync(url, content);
+            return RedirectToAction("Index");
         }
     }
 }
