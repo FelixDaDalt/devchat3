@@ -68,10 +68,15 @@ namespace devchat3.Controllers
             user.userName = userName.Value;
             user.email = email.Value;
             user.isGoogle = true;
+            user.password = "";
+            user.confirmar = "";
+            user.fullname = userName.Value;
+            user.nac = DateTime.Today;
             Usuario userAux = uow.Repousuario.Get(email.Value);
             if (userAux == null)
             {
                 uow.Repousuario.Insert(user);
+                uow.Save();
                 userAux = uow.Repousuario.Get(email.Value);
                 var claims = new List<Claim>
                     {
@@ -124,6 +129,8 @@ namespace devchat3.Controllers
             user.email = datos.email;
             user.photo = datos.picture.data.url;
             user.isFacebook = true;
+            user.password = "";
+            user.confirmar = "";
 
             if (currentSidClaim != null)
                 identity.RemoveClaim(currentSidClaim);
@@ -133,6 +140,7 @@ namespace devchat3.Controllers
             if (userAux == null)
             {
                 uow.Repousuario.Insert(user);
+                uow.Save();
                 userAux = uow.Repousuario.Get(datos.email);
                 var claims = new List<Claim>
                     {
